@@ -41,7 +41,7 @@ public class IM_Demo : ModuleRules
 		}
 		else if (Target.Platform == UnrealTargetPlatform.Win64)
 		{
-			PublicIncludePaths.Add(Path.Combine(_DebugPath, "include"));
+				PublicIncludePaths.Add(Path.Combine(_DebugPath, "include"));
 				PublicFrameworks.Add(Path.Combine(_DebugPath, "win64", "Release","TXLiteAVTestUserSig.dll"));
 				PublicAdditionalLibraries.Add(Path.Combine(_DebugPath, "win64", "Release","TXLiteAVTestUserSig.lib"));
 				RuntimeDependencies.Add("$(BinaryOutputDir)/TXLiteAVTestUserSig.dll", Path.Combine(_DebugPath, "win64", "Release", "TXLiteAVTestUserSig.dll"));
@@ -59,7 +59,8 @@ public class IM_Demo : ModuleRules
 		}
 		else if (Target.Platform == UnrealTargetPlatform.IOS)
 		{
-			PublicAdditionalFrameworks.Add(new UEBuildFramework( "ImSDK",_TIMSDKPath+"/ios/ImSDK.framework.zip", ""));
+			// PublicAdditionalFrameworks.Add(new UEBuildFramework( "ImSDK",_TIMSDKPath+"/ios/ImSDK.framework.zip", ""));
+			PublicAdditionalLibraries.Add(Path.Combine(_TIMSDKPath, "ios", "ImSDK.a"));
 		}
 		else if(Target.Platform == UnrealTargetPlatform.Mac)
 		{
