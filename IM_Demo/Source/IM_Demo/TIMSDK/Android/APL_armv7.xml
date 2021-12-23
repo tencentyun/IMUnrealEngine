@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- steps to add to build additions -->
+<root xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- init section is always evaluated once per architecture -->
+	<init>
+	    <setBool result="bSupported" value="false"/>
+	        <isArch arch="armeabi-v7a">
+	            <setBool result="bSupported" value="true"/>
+	        </isArch>
+			<isArch arch="arm64-v8a">
+	            <setBool result="bSupported" value="true"/>
+	        </isArch>
+            <isArch arch="armeabi">
+	            <setBool result="bSupported" value="true"/>
+	        </isArch>
+			<!-- <isArch arch="x86">
+	            <setBool result="bSupported" value="true"/>
+	        </isArch>
+			<isArch arch="x86_64">
+	            <setBool result="bSupported" value="true"/>
+	        </isArch> -->
+	</init>
+
+	<!-- optional files or directories to copy to Intermediate/Android/APK -->
+	<resourceCopies>
+		<log text="PluginDir: $S(PluginDir)"/>
+	        <copyFile src="$S(PluginDir)/$S(Architecture)/libImSDK.so"
+	                  dst="$S(BuildDir)/libs/$S(Architecture)/libImSDK.so" />
+	</resourceCopies>
+	
+	<buildGradleAdditions>
+		<insert>
+		dependencies {
+			implementation fileTree(dir: 'src/main/libs', include: ['*.jar'])
+		}
+		</insert>
+  	</buildGradleAdditions>
+	<androidManifestUpdates>
+		<addPermission android:name="android.permission.INTERNET" />
+		<addPermission android:name="android.permission.ACCESS_NETWORK_STATE" />
+		<addPermission android:name="android.permission.ACCESS_WIFI_STATE" />
+    </androidManifestUpdates>
+
+	<!-- optional libraries to load in GameActivity.java before libUE4.so -->
+	<soLoadLibrary>
+	    <if condition="bSupported">
+	        <true>
+				<loadLibrary name="ImSDK" failmsg="Failed to load ImSDK library" />
+
+			</true>
+	    </if>
+	</soLoadLibrary>
+	<gameActivityImportAdditions>
+        <insert>
+            import android.util.Base64;
+			import org.json.JSONException;
+			import org.json.JSONObject;
+			import java.io.UnsupportedEncodingException;
+			import java.nio.charset.Charset;
+			import java.security.InvalidKeyException;
+			import java.security.NoSuchAlgorithmException;
+			import java.util.Arrays;
+			import java.util.zip.Deflater;
+
+			import javax.crypto.Mac;
+			import javax.crypto.spec.SecretKeySpec;
+        </insert>
+    </gameActivityImportAdditions>
+	<gameActivityClassAdditions>
+    <insert>
+		public String genTestUserSig(int sdkappid, String userId, String key) {
+			return GenTLSSignature(sdkappid, userId, 604800, null, key);
+		}
+		private String GenTLSSignature(int sdkappid, String userId, long expire, byte[] userbuf, String priKeyContent) {
+        long currTime = System.currentTimeMillis() / 1000;
+        JSONObject sigDoc = new JSONObject();
+        try {
+            sigDoc.put("TLS.ver", "2.0");
+            sigDoc.put("TLS.identifier", userId);
+            sigDoc.put("TLS.sdkappid", sdkappid);
+            sigDoc.put("TLS.expire", expire);
+            sigDoc.put("TLS.time", currTime);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        String base64UserBuf = null;
+        if (null != userbuf) {
+            base64UserBuf = Base64.encodeToString(userbuf, Base64.NO_WRAP);
+            try {
+                sigDoc.put("TLS.userbuf", base64UserBuf);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        String sig = hmacshaSig(sdkappid, userId, currTime, expire, priKeyContent, base64UserBuf);
+        if (sig.length() == 0) {
+            return "";
+        }
+        try {
+            sigDoc.put("TLS.sig", sig);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Deflater compressor = new Deflater();
+        compressor.setInput(sigDoc.toString().getBytes(Charset.forName("UTF-8")));
+        compressor.finish();
+        byte[] compressedBytes = new byte[2048];
+        int compressedBytesLength = compressor.deflate(compressedBytes);
+        compressor.end();
+        return new String(baseEncodeUrl(Arrays.copyOfRange(compressedBytes, 0, compressedBytesLength)));
+    }
+
+
+    private String hmacshaSig(int sdkappid, String userId, long currTime, long expire, String priKeyContent, String base64Userbuf) {
+        String contentToBeSigned = "TLS.identifier:" + userId + "\n"
+                + "TLS.sdkappid:" + sdkappid + "\n"
+                + "TLS.time:" + currTime + "\n"
+                + "TLS.expire:" + expire + "\n";
+        if (null != base64Userbuf) {
+            contentToBeSigned += "TLS.userbuf:" + base64Userbuf + "\n";
+        }
+        try {
+            byte[] byteKey = priKeyContent.getBytes("UTF-8");
+            Mac hmac = Mac.getInstance("HmacSHA256");
+            SecretKeySpec keySpec = new SecretKeySpec(byteKey, "HmacSHA256");
+            hmac.init(keySpec);
+            byte[] byteSig = hmac.doFinal(contentToBeSigned.getBytes("UTF-8"));
+            return new String(Base64.encode(byteSig, Base64.NO_WRAP));
+        } catch (UnsupportedEncodingException e) {
+            return "";
+        } catch (NoSuchAlgorithmException e) {
+            return "";
+        } catch (InvalidKeyException e) {
+            return "";
+        }
+    }
+
+    private byte[] baseEncodeUrl(byte[] input) {
+        byte[] baseMn = new String(Base64.encode(input, Base64.NO_WRAP)).getBytes();
+		int len = baseMn.length;
+        for(int i = 0;i &lt; len;++i) {
+            switch(baseMn[i]) {
+                case '+':
+                    baseMn[i] = '*';
+                    break;
+                case '/':
+                    baseMn[i] = '-';
+                    break;
+                case '=':
+                    baseMn[i] = '_';
+                    break;
+                default:
+                    break;
+            }
+		}
+        return baseMn;
+    }
+    </insert>
+	</gameActivityClassAdditions>
+	<proguardAdditions>
+
+    <insert>
+      -keep class com.tencent.imsdk.** { *; }
+    </insert>
+  </proguardAdditions>
+</root>
