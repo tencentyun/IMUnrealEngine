@@ -55,7 +55,14 @@ public class IM_Demo : ModuleRules
 		PublicIncludePaths.Add(Path.Combine(_TIMSDKPath, "include"));
 		if (Target.Platform == UnrealTargetPlatform.Android)
 		{
-			// ....
+            PrivateDependencyModuleNames.AddRange(new string[] { "Launch" });
+            
+            AdditionalPropertiesForReceipt.Add(new ReceiptProperty("AndroidPlugin", Path.Combine(ModuleDirectory, "TIMSDK", "Android", "APL_armv7.xml")));
+			
+			string Architecture = "armeabi-v7a";
+			// string Architecture = "arm64-v8a";
+			// string Architecture = "armeabi";
+			PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory,"TIMSDK", "Android", Architecture, "libImSDK.so"));
 		}
 		else if (Target.Platform == UnrealTargetPlatform.IOS)
 		{
