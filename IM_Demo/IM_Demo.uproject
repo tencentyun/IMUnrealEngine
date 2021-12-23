@@ -7,7 +7,11 @@
 		{
 			"Name": "IM_Demo",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"UMG",
+				"Engine"
+			]
 		}
 	]
 }
