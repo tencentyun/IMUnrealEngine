@@ -59,8 +59,8 @@ public class IM_Demo : ModuleRules
 		}
 		else if (Target.Platform == UnrealTargetPlatform.IOS)
 		{
-			// PublicAdditionalFrameworks.Add(new UEBuildFramework( "ImSDK",_TIMSDKPath+"/ios/ImSDK.framework.zip", ""));
-			PublicAdditionalLibraries.Add(Path.Combine(_TIMSDKPath, "ios", "ImSDK.a"));
+			PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK",_TIMSDKPath+"/ios/ImSDK.framework.zip", ""));
+			// PublicAdditionalLibraries.Add(Path.Combine(_TIMSDKPath, "ios", "ImSDK.a"));
 		}
 		else if(Target.Platform == UnrealTargetPlatform.Mac)
 		{
