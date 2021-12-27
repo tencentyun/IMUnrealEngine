@@ -7,6 +7,15 @@
 #include "V2TIMManager.h"
 #include "DebugDefs.h"
 
+class LoginV2TIMCallback : public V2TIMCallback {
+  public:
+    LoginV2TIMCallback() {}
+    void OnSuccess() {
+    }
+    void OnError(int error_code, const V2TIMString& error_message) {
+    }
+};
+
 void UTimWidget::NativeConstruct()
 {
   Super::NativeConstruct();
@@ -28,6 +37,21 @@ void UTimWidget::NativeConstruct()
   if(isInit) {
     // 初始化成功
     writeLblLog("===init sucess");
+    if (JNIEnv* Env = FAndroidApplication::GetJavaEnv()) {
+        jmethodID GetPackageNameMethodID = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "genTestUserSig", "(ILjava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false);
+        jstring jsUserId = Env->NewStringUTF(testUserId);
+        jstring jsKey = Env->NewStringUTF(SECRETKEY);
+        jstring JstringResult = (jstring)FJavaWrapper::CallObjectMethod(Env, FJavaWrapper::GameActivityThis,GetPackageNameMethodID, SDKAppID, jsUserId, jsKey);
+        FString FinalResult = FJavaHelper::FStringFromLocalRef(Env, JstringResult);
+        auto twoHundredAnsi = StringCast<ANSICHAR>(*FinalResult);
+        const char* userSig = twoHundredAnsi.Get();
+        
+        V2TIMCallback* timCallBack = new LoginV2TIMCallback();
+        
+        timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
+        
+    }
+    
   } else {
     writeLblLog("===init fail");
   }
