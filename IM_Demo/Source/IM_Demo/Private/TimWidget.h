@@ -8,6 +8,14 @@
 #include "Components/EditableTextBox.h"
 #include "TimWidget.generated.h"
 
+#if PLATFORM_ANDROID
+#include "Runtime/Launch/Public/Android/AndroidJNI.h"
+#include "Runtime/Core/Public/Android/AndroidJavaEnv.h"
+#include "Runtime/ApplicationCore/Public/Android/AndroidApplication.h"
+#else
+#include "GenerateTestUserSig.h"
+#endif
+
 /**
  * 
  */
@@ -18,9 +26,12 @@ class UTimWidget : public UUserWidget
 private:
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
     UTextBlock* lblVersion;
+	void writeLblLog(const char *log);
 
 public:
 	void NativeConstruct() override;
-  void NativeDestruct() override;
+	void NativeDestruct() override;
+	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
+			UTextBlock* txtLog;
 	
 };
