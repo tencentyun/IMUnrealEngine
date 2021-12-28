@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
 #include "Components/EditableTextBox.h"
+#include "Components/VerticalBox.h"
+#include "Components/TextBlock.h"
 #include "TimWidget.generated.h"
 
 #if PLATFORM_ANDROID
@@ -33,5 +35,10 @@ public:
 	void NativeDestruct() override;
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
 			UTextBlock* txtLog;
+	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
+			UTextBlock* txtMessage;
+
+	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
+			UVerticalBox* vbMessageList;
 	
 };

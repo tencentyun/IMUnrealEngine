@@ -46,10 +46,12 @@ void UTimWidget::NativeConstruct()
         FString FinalResult = FJavaHelper::FStringFromLocalRef(Env, JstringResult);
         auto twoHundredAnsi = StringCast<ANSICHAR>(*FinalResult);
         const char* userSig = twoHundredAnsi.Get();
-        V2TIMCallback* timCallBack = new LoginV2TIMCallback();
-        timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
     }
+    #else
+      const char* userSig = GenerateTestUserSig().genTestUserSig(testUserId, SDKAppID, SECRETKEY);
     #endif
+    V2TIMCallback* timCallBack = new LoginV2TIMCallback();
+    timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
   } else {
     writeLblLog("===init fail");
   }
