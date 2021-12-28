@@ -29,6 +29,9 @@ void UTimWidget::NativeConstruct()
   FString tempUserText = stdStrTemp2.c_str();
   lblVersion->SetText(FText::FromString(tempUserText));
 
+  V2TIMString ui_platform = "ue4";
+  timInstance->CallExperimentalAPI("setUIPlatform", &ui_platform, nullptr);
+  
   V2TIMSDKConfig timConfig;
   timConfig.initPath = static_cast<V2TIMString>("D:\\");
   timConfig.logPath = static_cast<V2TIMString>("D:\\");
@@ -37,6 +40,7 @@ void UTimWidget::NativeConstruct()
   if(isInit) {
     // 初始化成功
     writeLblLog("===init sucess");
+    V2TIMCallback* timCallBack = new LoginV2TIMCallback();
     #if PLATFORM_ANDROID
     if (JNIEnv* Env = FAndroidApplication::GetJavaEnv()) {
         jmethodID GetPackageNameMethodID = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "genTestUserSig", "(ILjava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false);
@@ -46,12 +50,12 @@ void UTimWidget::NativeConstruct()
         FString FinalResult = FJavaHelper::FStringFromLocalRef(Env, JstringResult);
         auto twoHundredAnsi = StringCast<ANSICHAR>(*FinalResult);
         const char* userSig = twoHundredAnsi.Get();
+        timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
     }
     #else
       const char* userSig = GenerateTestUserSig().genTestUserSig(testUserId, SDKAppID, SECRETKEY);
+      timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
     #endif
-    V2TIMCallback* timCallBack = new LoginV2TIMCallback();
-    timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
   } else {
     writeLblLog("===init fail");
   }
