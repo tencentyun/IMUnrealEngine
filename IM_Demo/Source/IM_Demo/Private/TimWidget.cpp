@@ -55,12 +55,12 @@ void UTimWidget::NativeConstruct()
   } else {
     writeLblLog("===init fail");
   }
-  vbMessageList->ClearChildren();
+  sbMessageList->ClearChildren();
   for (auto i = 0; i < 20; i++)
   {
     UTextBlock* TextBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
     TextBlock->SetText(FText::AsNumber(i));
-    vbMessageList->AddChildToVerticalBox(
+    sbMessageList->AddChild(
       TextBlock
     );
   }

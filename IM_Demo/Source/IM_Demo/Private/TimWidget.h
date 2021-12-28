@@ -7,6 +7,7 @@
 #include "Components/TextBlock.h"
 #include "Components/EditableTextBox.h"
 #include "Components/VerticalBox.h"
+#include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
 #include "TimWidget.generated.h"
 
@@ -35,10 +36,7 @@ public:
 	void NativeDestruct() override;
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
 			UTextBlock* txtLog;
-	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
-			UTextBlock* txtMessage;
 
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
-			UVerticalBox* vbMessageList;
-	
+			UScrollBox* sbMessageList;
 };
