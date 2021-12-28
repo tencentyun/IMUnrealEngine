@@ -62,7 +62,7 @@ void UTimWidget::NativeConstruct()
     vbMessageList->AddChildToVerticalBox(
       NewKid
     );
-    WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
+    //WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
 
     if(UTextBlock* Text_ID = Cast<UTextBlock>(NewKid->GetWidgetFromName(TEXT("txtMessage"))))
       Text_ID->SetText(FText::AsNumber(i));
