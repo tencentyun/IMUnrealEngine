@@ -55,18 +55,15 @@ void UTimWidget::NativeConstruct()
   } else {
     writeLblLog("===init fail");
   }
-  //vbMessageList->ClearChildren();
-  // for (auto i = 0; i < 20; i++)
-  // {
-  //   UUserWidget* NewKid = CreateWidget<UUserWidget>(GWorld->GetGameInstance(), UTextBlock::StaticClass());
-  //   vbMessageList->AddChildToVerticalBox(
-  //     NewKid
-  //   );
-  //   //WidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("WidgetComponent"));
-
-  //   if(UTextBlock* Text_ID = Cast<UTextBlock>(NewKid->GetWidgetFromName(TEXT("txtMessage"))))
-  //     Text_ID->SetText(FText::AsNumber(i));
-  // }
+  vbMessageList->ClearChildren();
+  for (auto i = 0; i < 20; i++)
+  {
+    UTextBlock* TextBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
+    TextBlock->SetText(FText::AsNumber(i));
+    vbMessageList->AddChildToVerticalBox(
+      TextBlock
+    );
+  }
 }
 
 void UTimWidget::NativeDestruct()
