@@ -37,6 +37,7 @@ void UTimWidget::NativeConstruct()
   if(isInit) {
     // 初始化成功
     writeLblLog("===init sucess");
+    #if PLATFORM_ANDROID
     if (JNIEnv* Env = FAndroidApplication::GetJavaEnv()) {
         jmethodID GetPackageNameMethodID = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "genTestUserSig", "(ILjava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false);
         jstring jsUserId = Env->NewStringUTF(testUserId);
@@ -45,13 +46,10 @@ void UTimWidget::NativeConstruct()
         FString FinalResult = FJavaHelper::FStringFromLocalRef(Env, JstringResult);
         auto twoHundredAnsi = StringCast<ANSICHAR>(*FinalResult);
         const char* userSig = twoHundredAnsi.Get();
-        
         V2TIMCallback* timCallBack = new LoginV2TIMCallback();
-        
         timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
-        
     }
-    
+    #endif
   } else {
     writeLblLog("===init fail");
   }
