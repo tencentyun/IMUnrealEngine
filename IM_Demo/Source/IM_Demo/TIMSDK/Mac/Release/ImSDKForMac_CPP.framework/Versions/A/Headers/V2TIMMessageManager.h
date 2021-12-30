@@ -59,6 +59,7 @@ public:
      *  @note atUserList 使用注意事项
      *  - 默认情况下，最多支持 @ 30个用户，超过限制后，消息会发送失败。
      *  - atUserList 的总数不能超过默认最大数，包括 @ALL。
+     *  - 直播群（AVChatRoom）不支持发送 @ 消息。
      */
     virtual V2TIMMessage CreateTextAtMessage(const V2TIMString &text,
                                              const V2TIMStringVector &atUserList) = 0;

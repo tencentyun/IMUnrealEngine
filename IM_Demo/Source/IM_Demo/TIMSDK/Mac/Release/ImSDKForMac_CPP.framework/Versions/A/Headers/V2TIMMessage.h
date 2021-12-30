@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2021 Tencent. All rights reserved.
+// Copyright (c) 2021 Tencent. All rights reserved.
 
 #ifndef __V2TIM_MESSAGE_H__
 #define __V2TIM_MESSAGE_H__
@@ -65,6 +65,9 @@ enum V2TIMElemType {
     ///< 合并消息
     V2TIM_ELEM_TYPE_MERGER = 10,
 };
+
+DEFINE_VECTOR(V2TIMElemType)
+typedef TXV2TIMElemTypeVector V2TIMElemTypeVector;
 
 /// 推送规则
 enum V2TIMOfflinePushFlag {
@@ -706,9 +709,6 @@ typedef TXV2TIMReceiveMessageOptInfoVector V2TIMReceiveMessageOptInfoVector;
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-DEFINE_VECTOR(V2TIMElemType)
-typedef TXV2TIMElemTypeVector V2TIMElemTypeVector;
-
 /// 消息搜索参数
 struct TIM_API V2TIMMessageSearchParam {
     /**
@@ -728,7 +728,7 @@ struct TIM_API V2TIMMessageSearchParam {
      */
     V2TIMStringVector senderUserIDList;
 
-    /// 指定搜索的消息类型集合，传 nil 表示搜索支持的全部类型消息（V2TIMFaceElem 和
+    /// 指定搜索的消息类型集合，传入空数组表示搜索支持的全部类型消息（V2TIMFaceElem 和
     /// V2TIMGroupTipsElem 不支持）取值详见 @V2TIMElemType。
     V2TIMElemTypeVector messageTypeList;
 
@@ -844,6 +844,9 @@ struct TIM_API V2TIMMessageListGetOption {
 
     /// 拉取消息数量
     uint32_t count;
+
+    /// 拉取的消息类型集合，getType 为 V2TIM_GET_LOCAL_OLDER_MSG 和 V2TIM_GET_LOCAL_NEWER_MSG 有效，传入空数组表示拉取全部类型消息，取值详见 @V2TIMElemType。
+    V2TIMElemTypeVector messageTypeList;
 
     /**
      * 拉取消息的起始消息

@@ -9,7 +9,7 @@ public class IM_Demo : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "SQLiteSupport","InputCore", "HeadMountedDisplay" });
 		// Uncomment if you are using Slate UI
 		PrivateDependencyModuleNames.AddRange(new string[] {"UMG", "Slate", "SlateCore"});
 
@@ -62,12 +62,41 @@ public class IM_Demo : ModuleRules
 			PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory,"TIMSDK", "Android", Architecture, "libImSDK.so"));
 		}
 		else if (Target.Platform == UnrealTargetPlatform.IOS) {
-			// PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK",_TIMSDKPath+"/ios/ImSDK.framework.zip", ""));
-			PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"));
-			RuntimeDependencies.Add(Path. Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/Info.plist"), UnrealBuildTool.StagedFileType.SystemNonUFS);
-			RuntimeDependencies.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"),UnrealBuildTool.StagedFileType.SystemNonUFS);
+			PublicAdditionalLibraries.AddRange(
+				new string[] {
+					"z","c++",
+					"z.1.1.3",
+					"sqlite3",
+					"xml2"
+				}
+			);
+            PublicFrameworks.AddRange(new string[]{
+				"Security",
+				"AdSupport",
+				"CoreTelephony",
+				"CoreGraphics",
+				"UIKit"
+			});
+			PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK_CPP",_TIMSDKPath+"/ios/ImSDK_CPP.framework.zip", ""));
+			// PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"));
+			// RuntimeDependencies.Add(Path. Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/Info.plist"), UnrealBuildTool.StagedFileType.SystemNonUFS);
+			// RuntimeDependencies.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"),UnrealBuildTool.StagedFileType.SystemNonUFS);
 		}
 		else if(Target.Platform == UnrealTargetPlatform.Mac) {
+			PublicAdditionalLibraries.AddRange(new string[] {
+                "resolv",
+                "z",
+                "c++",
+                "bz2",
+				"sqlite3",
+            });
+            PublicFrameworks.AddRange(
+                new string[] {
+                    "AppKit",
+					"Security",
+					"CFNetwork",
+					"SystemConfiguration",
+                });
 			// PublicFrameworks.Add(Path.Combine(_TIMSDKPath, "Mac", "Release","ImSDKForMac.framework"));
 			PublicFrameworks.Add(Path.Combine(_TIMSDKPath, "Mac", "Release","ImSDKForMac_CPP.framework"));
 		}
