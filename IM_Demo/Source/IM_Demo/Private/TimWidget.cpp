@@ -60,14 +60,14 @@ void UTimWidget::NativeConstruct()
     writeLblLog("===init fail");
   }
   sbMessageList->ClearChildren();
-  for (auto i = 0; i < 20; i++)
-  {
-    UTextBlock* TextBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
-    TextBlock->SetText(FText::AsNumber(i));
-    sbMessageList->AddChild(
-      TextBlock
-    );
-  }
+  // for (auto i = 0; i < 20; i++)
+  // {
+  //   UTextBlock* TextBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
+  //   TextBlock->SetText(FText::AsNumber(i));
+  //   sbMessageList->AddChild(
+  //     TextBlock
+  //   );
+  // }
 }
 
 void UTimWidget::NativeDestruct()
