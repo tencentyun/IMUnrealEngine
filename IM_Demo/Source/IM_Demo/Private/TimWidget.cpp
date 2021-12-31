@@ -6,12 +6,6 @@
 #include <string>
 #include "DebugDefs.h"
 
-#include "V2TIMBuffer.h"
-#include "V2TIMDefine.h"
-#include "V2TIMManager.h"
-#include "V2TIMMessage.h"
-#include "V2TIMGroupManager.h"
-
 
 class LoginV2TIMCallback : public V2TIMCallback {
   public:
@@ -27,7 +21,7 @@ void UTimWidget::NativeConstruct()
   Super::NativeConstruct();
   
   // 获取sdk单例对象
-  V2TIMManager* timInstance = V2TIMManager::GetInstance();
+  timInstance = V2TIMManager::GetInstance();
   // 获取sdk版本号
   V2TIMString timString = timInstance->GetVersion();
 
@@ -70,12 +64,15 @@ void UTimWidget::timLogin() {
   #else
     const char* userSig = GenerateTestUserSig().genTestUserSig(testUserId, SDKAppID, SECRETKEY);
     timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
+    // timCallBack->OnError(() =>{
+    //   this->joinGroup();
+    // });
   #endif
 }
 
 void UTimWidget::sendMessageToGroup() {
   UTextBlock* textBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
-  TextBlock->SetText(FText::FromString("我：发送消息"));
+  textBlock->SetText(FText::FromString("ME: sendMessageToGroup"));
   sbMessageList->AddChild(
     textBlock
   );
@@ -83,7 +80,7 @@ void UTimWidget::sendMessageToGroup() {
 
 void UTimWidget::joinGroup() {
   UTextBlock* textBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
-  TextBlock->SetText(FText::FromString("我进入群聊"));
+  textBlock->SetText(FText::FromString("joinGroup"));
   sbMessageList->AddChild(
     textBlock
   );

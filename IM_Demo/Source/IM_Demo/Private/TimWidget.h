@@ -9,6 +9,13 @@
 #include "Components/VerticalBox.h"
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
+
+#include "V2TIMBuffer.h"
+#include "V2TIMDefine.h"
+#include "V2TIMManager.h"
+#include "V2TIMMessage.h"
+#include "V2TIMGroupManager.h"
+
 #include "TimWidget.generated.h"
 
 #if PLATFORM_ANDROID
@@ -18,6 +25,8 @@
 #else
 #include "GenerateTestUserSig.h"
 #endif
+
+
 
 /**
  * 
@@ -29,6 +38,9 @@ class UTimWidget : public UUserWidget
 private:
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
     UTextBlock* lblVersion;
+
+	V2TIMManager* timInstance;
+
 	void writeLblLog(const char *log);
 	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
 		void timLogin();
@@ -40,6 +52,7 @@ private:
 public:
 	void NativeConstruct() override;
 	void NativeDestruct() override;
+	
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
 			UTextBlock* txtLog;
 
