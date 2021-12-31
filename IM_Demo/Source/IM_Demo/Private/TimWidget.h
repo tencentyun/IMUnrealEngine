@@ -30,6 +30,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
     UTextBlock* lblVersion;
 	void writeLblLog(const char *log);
+	void timLogin();
+	void joinGroup();
+	void sendMessageToGroup();
 
 public:
 	void NativeConstruct() override;

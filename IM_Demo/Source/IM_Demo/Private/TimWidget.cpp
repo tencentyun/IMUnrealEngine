@@ -4,8 +4,14 @@
 #include "TimWidget.h"
 #include "Engine/Engine.h"
 #include <string>
-#include "V2TIMManager.h"
 #include "DebugDefs.h"
+
+#include "V2TIMBuffer.h"
+#include "V2TIMDefine.h"
+#include "V2TIMManager.h"
+#include "V2TIMMessage.h"
+#include "V2TIMGroupManager.h"
+
 
 class LoginV2TIMCallback : public V2TIMCallback {
   public:
@@ -40,34 +46,47 @@ void UTimWidget::NativeConstruct()
   if(isInit) {
     // 初始化成功
     writeLblLog("===init sucess");
-    V2TIMCallback* timCallBack = new LoginV2TIMCallback();
-    #if PLATFORM_ANDROID
-    if (JNIEnv* Env = FAndroidApplication::GetJavaEnv()) {
-        jmethodID GetPackageNameMethodID = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "genTestUserSig", "(ILjava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false);
-        jstring jsUserId = Env->NewStringUTF(testUserId);
-        jstring jsKey = Env->NewStringUTF(SECRETKEY);
-        jstring JstringResult = (jstring)FJavaWrapper::CallObjectMethod(Env, FJavaWrapper::GameActivityThis,GetPackageNameMethodID, SDKAppID, jsUserId, jsKey);
-        FString FinalResult = FJavaHelper::FStringFromLocalRef(Env, JstringResult);
-        auto twoHundredAnsi = StringCast<ANSICHAR>(*FinalResult);
-        const char* userSig = twoHundredAnsi.Get();
-        timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
-    }
-    #else
-      const char* userSig = GenerateTestUserSig().genTestUserSig(testUserId, SDKAppID, SECRETKEY);
-      timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
-    #endif
+    this->timLogin();
   } else {
     writeLblLog("===init fail");
   }
   sbMessageList->ClearChildren();
-  // for (auto i = 0; i < 20; i++)
-  // {
-  //   UTextBlock* TextBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
-  //   TextBlock->SetText(FText::AsNumber(i));
-  //   sbMessageList->AddChild(
-  //     TextBlock
-  //   );
-  // }
+  
+}
+
+void UTimWidget::timLogin() {
+  V2TIMCallback* timCallBack = new LoginV2TIMCallback();
+  #if PLATFORM_ANDROID
+  if (JNIEnv* Env = FAndroidApplication::GetJavaEnv()) {
+      jmethodID GetPackageNameMethodID = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "genTestUserSig", "(ILjava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false);
+      jstring jsUserId = Env->NewStringUTF(testUserId);
+      jstring jsKey = Env->NewStringUTF(SECRETKEY);
+      jstring JstringResult = (jstring)FJavaWrapper::CallObjectMethod(Env, FJavaWrapper::GameActivityThis,GetPackageNameMethodID, SDKAppID, jsUserId, jsKey);
+      FString FinalResult = FJavaHelper::FStringFromLocalRef(Env, JstringResult);
+      auto twoHundredAnsi = StringCast<ANSICHAR>(*FinalResult);
+      const char* userSig = twoHundredAnsi.Get();
+      timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
+  }
+  #else
+    const char* userSig = GenerateTestUserSig().genTestUserSig(testUserId, SDKAppID, SECRETKEY);
+    timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
+  #endif
+}
+
+void UTimWidget::sendMessageToGroup() {
+  UTextBlock* textBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
+  TextBlock->SetText(FText::FromString("我：发送消息"));
+  sbMessageList->AddChild(
+    textBlock
+  );
+}
+
+void UTimWidget::joinGroup() {
+  UTextBlock* textBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
+  TextBlock->SetText(FText::FromString("我进入群聊"));
+  sbMessageList->AddChild(
+    textBlock
+  );
 }
 
 void UTimWidget::NativeDestruct()
