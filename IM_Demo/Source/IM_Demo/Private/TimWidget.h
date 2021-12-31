@@ -30,9 +30,12 @@ private:
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
     UTextBlock* lblVersion;
 	void writeLblLog(const char *log);
-	void timLogin();
-	void joinGroup();
-	void sendMessageToGroup();
+	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
+		void timLogin();
+	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
+		void joinGroup();
+	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
+		void sendMessageToGroup();
 
 public:
 	void NativeConstruct() override;
