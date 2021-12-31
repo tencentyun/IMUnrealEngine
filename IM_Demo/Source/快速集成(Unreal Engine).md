@@ -35,13 +35,38 @@ private void loadTIMSDK(ReadOnlyTargetRules Target) {
         PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory,"TIMSDK", "Android", Architecture, "libImSDK.so"));
     }
     else if (Target.Platform == UnrealTargetPlatform.IOS) {
-        // PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK",_TIMSDKPath+"/ios/ImSDK.framework.zip", ""));
-        PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"));
-        RuntimeDependencies.Add(Path. Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/Info.plist"), UnrealBuildTool.StagedFileType.SystemNonUFS);
-        RuntimeDependencies.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"),UnrealBuildTool.StagedFileType.SystemNonUFS);
+        PublicAdditionalLibraries.AddRange(
+            new string[] {
+                "z","c++",
+                "z.1.1.3",
+                "sqlite3",
+                "xml2"
+            }
+        );
+    PublicFrameworks.AddRange(new string[]{
+            "Security",
+            "AdSupport",
+            "CoreTelephony",
+            "CoreGraphics",
+            "UIKit"
+        });
+        PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK_CPP",_TIMSDKPath+"/ios/ImSDK_CPP.framework.zip", ""));
     }
     else if(Target.Platform == UnrealTargetPlatform.Mac) {
-        // PublicFrameworks.Add(Path.Combine(_TIMSDKPath, "Mac", "Release","ImSDKForMac.framework"));
+        PublicAdditionalLibraries.AddRange(new string[] {
+            "resolv",
+            "z",
+            "c++",
+            "bz2",
+            "sqlite3",
+        });
+    PublicFrameworks.AddRange(
+            new string[] {
+                "AppKit",
+                "Security",
+                "CFNetwork",
+                "SystemConfiguration",
+            });
         PublicFrameworks.Add(Path.Combine(_TIMSDKPath, "Mac", "Release","ImSDKForMac_CPP.framework"));
     }
     else if (Target.Platform == UnrealTargetPlatform.Win64) {
@@ -69,37 +94,13 @@ bool isInit = timInstance->InitSDK(SDKAppID, timConfig);
 <dx-tabs>
 ::: macOS\s端
 1. File -> Package Project -> Mac
-2. 配置权限。右击上一步编译出的 xxx.app 文件 - 选择 "显示包内容" 
-![](https://imgcache.qq.com/operation/dianshi/other/macos.85afe01a6930d8f2ba9caadce89693cdd740c6e0.png)
-3. 进入 "Contents->Info.plist"
-4. 选择 "Information Property List" 然后添加以下两个权限:
-```
-<key>NSCameraUsageDescription</key>
-<string>授权摄像头权限才能正常视频通话</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>授权麦克风权限才能正常语音通话</string>
-```
-5. 如果你现在在UE4的editor运行的话，需要找到 **UE4Editor.app** 文件并且按照上面步骤添加权限。
 :::
 ::: Windows\s端
 1. File->Package Project->Windows->Windows(64-bit)
 ![](https://imgcache.qq.com/operation/dianshi/other/win.ba79ccce59ae58718e6c35c16cdef55531456a70.png)
 :::
 ::: iOS\s端
-1. 在 iOS 上也需要以下权限：
-```
-Privacy - Camera Usage Description
-Privacy - Microphone Usage Description
-```
-为了将上述权限添加到 info.plist 里，你可以在 **Edit->Project Settings->Platforms: iOS** 中，将 
-```
-<key>NSCameraUsageDescription</key>
-<string>授权摄像头权限才能正常视频通话</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>授权麦克风权限才能正常语音通话</string>
-```
-添加到 Additional Plist Data 里。
-2. 最后打包项目。File -> Package Project -> iOS
+1. 打包项目。File -> Package Project -> iOS
 :::
 ::: Android\s端
 1.开发调试：详见[Android快速入门](https://docs.unrealengine.com/4.27/zh-CN/SharingAndReleasing/Mobile/Android/GettingStarted/)

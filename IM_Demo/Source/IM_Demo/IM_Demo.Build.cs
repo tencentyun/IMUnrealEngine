@@ -70,7 +70,7 @@ public class IM_Demo : ModuleRules
 					"xml2"
 				}
 			);
-            PublicFrameworks.AddRange(new string[]{
+      PublicFrameworks.AddRange(new string[]{
 				"Security",
 				"AdSupport",
 				"CoreTelephony",
@@ -78,9 +78,6 @@ public class IM_Demo : ModuleRules
 				"UIKit"
 			});
 			PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK_CPP",_TIMSDKPath+"/ios/ImSDK_CPP.framework.zip", ""));
-			// PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"));
-			// RuntimeDependencies.Add(Path. Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/Info.plist"), UnrealBuildTool.StagedFileType.SystemNonUFS);
-			// RuntimeDependencies.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"),UnrealBuildTool.StagedFileType.SystemNonUFS);
 		}
 		else if(Target.Platform == UnrealTargetPlatform.Mac) {
 			PublicAdditionalLibraries.AddRange(new string[] {
@@ -90,14 +87,13 @@ public class IM_Demo : ModuleRules
                 "bz2",
 				"sqlite3",
             });
-            PublicFrameworks.AddRange(
+      PublicFrameworks.AddRange(
                 new string[] {
                     "AppKit",
 					"Security",
 					"CFNetwork",
 					"SystemConfiguration",
                 });
-			// PublicFrameworks.Add(Path.Combine(_TIMSDKPath, "Mac", "Release","ImSDKForMac.framework"));
 			PublicFrameworks.Add(Path.Combine(_TIMSDKPath, "Mac", "Release","ImSDKForMac_CPP.framework"));
 		}
 		else if (Target.Platform == UnrealTargetPlatform.Win64) {
