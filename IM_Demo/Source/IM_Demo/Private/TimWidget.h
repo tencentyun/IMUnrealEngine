@@ -11,11 +11,15 @@
 #include "Components/TextBlock.h"
 
 #include "V2TIMBuffer.h"
+#include "V2TIMConversationManager.h"
 #include "V2TIMDefine.h"
 #include "V2TIMManager.h"
 #include "V2TIMMessage.h"
+#include "V2TIMMessageManager.h"
 #include "V2TIMGroupManager.h"
-
+#include "V2TIMFriendshipManager.h"
+#include "V2TIMSignaling.h"
+#include "V2TIMSignalingManager.h"
 #include "TimWidget.generated.h"
 
 #if PLATFORM_ANDROID
@@ -32,7 +36,7 @@
  * 
  */
 UCLASS()
-class UTimWidget : public UUserWidget
+class UTimWidget : public UUserWidget,public V2TIMCallback
 {
 	GENERATED_BODY()
 private:
@@ -42,6 +46,8 @@ private:
 	V2TIMManager* timInstance;
 
 	void writeLblLog(const char *log);
+	void addMessageToUI(const char *message);
+
 	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
 		void timLogin();
 	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
@@ -50,11 +56,15 @@ private:
 		void sendMessageToGroup();
 
 public:
+	void OnSuccess() override;
+	void OnError(int error_code, const V2TIMString& error_message) override;
 	void NativeConstruct() override;
 	void NativeDestruct() override;
 	
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
 			UTextBlock* txtLog;
+	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
+	UEditableTextBox* txtInputMessage;
 
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
 			UScrollBox* sbMessageList;

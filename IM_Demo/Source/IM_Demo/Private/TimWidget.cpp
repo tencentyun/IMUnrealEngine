@@ -7,14 +7,6 @@
 #include "DebugDefs.h"
 
 
-class LoginV2TIMCallback : public V2TIMCallback {
-  public:
-    LoginV2TIMCallback() {}
-    void OnSuccess() {
-    }
-    void OnError(int error_code, const V2TIMString& error_message) {
-    }
-};
 
 void UTimWidget::NativeConstruct()
 {
@@ -39,17 +31,24 @@ void UTimWidget::NativeConstruct()
   bool isInit = timInstance->InitSDK(SDKAppID, timConfig);
   if(isInit) {
     // 初始化成功
-    writeLblLog("===init sucess");
+    writeLblLog("===init sucess====");
     this->timLogin();
   } else {
-    writeLblLog("===init fail");
+    writeLblLog("===init fail====");
   }
   sbMessageList->ClearChildren();
-  
+}
+
+void UTimWidget::OnSuccess() {
+  writeLblLog("OnSuccess");
+  this->joinGroup();
+}
+
+void UTimWidget::OnError (int error_code, const V2TIMString& error_message) {
+  writeLblLog(error_message.CString());
 }
 
 void UTimWidget::timLogin() {
-  V2TIMCallback* timCallBack = new LoginV2TIMCallback();
   #if PLATFORM_ANDROID
   if (JNIEnv* Env = FAndroidApplication::GetJavaEnv()) {
       jmethodID GetPackageNameMethodID = FJavaWrapper::FindMethod(Env, FJavaWrapper::GameActivityClassID, "genTestUserSig", "(ILjava/lang/String;Ljava/lang/String;)Ljava/lang/String;", false);
@@ -59,31 +58,62 @@ void UTimWidget::timLogin() {
       FString FinalResult = FJavaHelper::FStringFromLocalRef(Env, JstringResult);
       auto twoHundredAnsi = StringCast<ANSICHAR>(*FinalResult);
       const char* userSig = twoHundredAnsi.Get();
-      timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
+      timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), this);
   }
   #else
     const char* userSig = GenerateTestUserSig().genTestUserSig(testUserId, SDKAppID, SECRETKEY);
-    timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), timCallBack);
-    // timCallBack->OnError(() =>{
-    //   this->joinGroup();
-    // });
+    timInstance->Login(static_cast<V2TIMString>(testUserId), static_cast<V2TIMString>(userSig), this);
   #endif
 }
 
-void UTimWidget::sendMessageToGroup() {
+void UTimWidget::addMessageToUI(const char *message){
   UTextBlock* textBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
-  textBlock->SetText(FText::FromString("ME: sendMessageToGroup"));
+  textBlock->SetText(FText::FromString(message));
   sbMessageList->AddChild(
     textBlock
   );
 }
 
-void UTimWidget::joinGroup() {
+
+void UTimWidget::sendMessageToGroup() {
+  FString fInputMessage = txtInputMessage->GetText().ToString();
+  std::string strInputMessage(TCHAR_TO_UTF8(*fInputMessage));
+  const char* charInputMessage = strInputMessage.c_str();
+
+  auto message = V2TIMManager::GetInstance()->GetMessageManager()->CreateTextMessage(
+            charInputMessage);
+  V2TIMManager::GetInstance()->GetMessageManager()->SendMessage(
+      message, "", "hello-UE4-IM", V2TIM_PRIORITY_DEFAULT, false,
+      V2TIMOfflinePushInfo(),nullptr);
   UTextBlock* textBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
-  textBlock->SetText(FText::FromString("joinGroup"));
+  textBlock->SetText(txtInputMessage->GetText());
   sbMessageList->AddChild(
     textBlock
   );
+  txtInputMessage->SetText(FText::FromString(""));
+}
+
+void UTimWidget::joinGroup() {
+  V2TIMString groupID = "hello-UE4-IM";
+  V2TIMGroupInfo group_info;
+  group_info.groupID = groupID;
+  group_info.groupType = "Public";
+  group_info.groupName = "这是一个直播群组";
+  group_info.groupAddOpt = V2TIM_GROUP_ADD_AUTH;
+  group_info.introduction = "群简介";
+
+  V2TIMCreateGroupMemberInfo member;
+  member.userID = testUserId;
+  member.role = V2TIM_GROUP_MEMBER_ROLE_MEMBER;
+  V2TIMCreateGroupMemberInfoVector member_list;
+  //member_list.PushBack(member);
+  V2TIMManager::GetInstance()->GetGroupManager()->CreateGroup(
+      group_info, member_list, nullptr);
+
+  V2TIMString message = "join group hello-UE4-IM";
+  V2TIMManager::GetInstance()->JoinGroup(groupID, message, nullptr);
+  addMessageToUI("I join group hello-UE4-IM");
+
 }
 
 void UTimWidget::NativeDestruct()
