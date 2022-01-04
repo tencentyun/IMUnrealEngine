@@ -1,6 +1,6 @@
 本文主要介绍如何快速运行腾讯云 即时通信 IM Demo（Unreal Engine）。
 
->! 目前 支持Windows、MacOs、ios、Android。
+> 目前 支持Windows、MacOs、ios、Android。
 
 ## 环境要求
 - 建议Unreal Engine 4.27.1 及以上版本。
