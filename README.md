@@ -69,10 +69,8 @@
 
 # Android\s端
 1.开发调试：详见[Android快速入门](https://docs.unrealengine.com/4.27/zh-CN/SharingAndReleasing/Mobile/Android/GettingStarted/)
+
 2.打包项目：详见[打包Android项目](https://docs.unrealengine.com/4.27/zh-CN/SharingAndReleasing/Mobile/Android/PackagingAndroidProject/)
-
-## Demo运行
-
 
 ## TRTC全平台 C++ API文档
 [API概览](https://comm.qq.com/imsdk/ue4/md_introduction_CPP%E6%A6%82%E8%A7%88.html)
@@ -81,8 +79,13 @@
 
 ### 安卓“Attempt to construct staged filesystem reference from absolute path"”报错
 关闭UE4项目，打开cmd
+
 >adb shell
+
 >cd sdcard
+
 >ls (you should see the UE4Game directory listed)
+
 >rm -r UE4Game
+
 重新编译项目

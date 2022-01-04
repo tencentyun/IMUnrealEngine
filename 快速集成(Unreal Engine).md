@@ -104,6 +104,7 @@ bool isInit = timInstance->InitSDK(SDKAppID, timConfig);
 
 #### Android\s端
 1.开发调试：详见[Android快速入门](https://docs.unrealengine.com/4.27/zh-CN/SharingAndReleasing/Mobile/Android/GettingStarted/)
+
 2.打包项目：详见[打包Android项目](https://docs.unrealengine.com/4.27/zh-CN/SharingAndReleasing/Mobile/Android/PackagingAndroidProject/)
 
 ## IM全平台 C++ API文档
