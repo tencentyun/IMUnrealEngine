@@ -77,7 +77,7 @@ private void loadTIMSDK(ReadOnlyTargetRules Target) {
 }
 ```
 4. 在**[project_name].Build.cs**文件调用该函数
-![](https://imgcache.qq.com/operation/dianshi/other/TRTCSDK.82d81b0b8fe050772b3c8e02c4578b920515a580.jpg)
+![](https://imgcache.qq.com/operation/dianshi/other/im.daf6916efad5d76a751bf224dddec8e1c9cabaff.png)
 5. 到目前为止你已经集成了IM SDK。可在你的cpp 文件中使用IM的能力了。`#include "V2TIMManager.h"`
 ```
 // 获取sdk单例对象
