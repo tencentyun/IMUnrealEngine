@@ -78,7 +78,7 @@ private void loadTIMSDK(ReadOnlyTargetRules Target) {
 ```
 4. 在**[project_name].Build.cs**文件调用该函数
 ![](https://imgcache.qq.com/operation/dianshi/other/TRTCSDK.82d81b0b8fe050772b3c8e02c4578b920515a580.jpg)
-5. 到目前为止你已经集成了IM SDK。可在你的cpp 文件中使用TRTC了。`#include "V2TIMManager.h"`
+5. 到目前为止你已经集成了IM SDK。可在你的cpp 文件中使用IM的能力了。`#include "V2TIMManager.h"`
 ```
 // 获取sdk单例对象
 V2TIMManager* timInstance = V2TIMManager::GetInstance();
