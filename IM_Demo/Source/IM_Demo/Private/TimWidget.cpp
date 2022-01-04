@@ -68,10 +68,13 @@ void UTimWidget::timLogin() {
 
 void UTimWidget::addMessageToUI(const char *message){
   UTextBlock* textBlock = NewObject<UTextBlock>(this, UTextBlock::StaticClass());
-  textBlock->SetText(FText::FromString(message));
-  sbMessageList->AddChild(
-    textBlock
-  );
+  AsyncTask(ENamedThreads::GameThread, [=]() {
+      textBlock->SetText(FText::FromString(message));
+      sbMessageList->AddChild(
+        textBlock
+      );
+  });
+  
 }
 
 
@@ -113,7 +116,6 @@ void UTimWidget::joinGroup() {
   V2TIMString message = "join group hello-UE4-IM";
   V2TIMManager::GetInstance()->JoinGroup(groupID, message, nullptr);
   addMessageToUI("I join group hello-UE4-IM");
-
 }
 
 void UTimWidget::NativeDestruct()
