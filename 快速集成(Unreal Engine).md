@@ -37,28 +37,31 @@ private void loadTIMSDK(ReadOnlyTargetRules Target) {
     else if (Target.Platform == UnrealTargetPlatform.IOS) {
         PublicAdditionalLibraries.AddRange(
             new string[] {
-                "z","c++",
-                "z.1.1.3",
-                "sqlite3",
-                "xml2"
+                "z",
+                "c++",
+                "sqlite3"
             }
         );
     PublicFrameworks.AddRange(new string[]{
-            "Security",
-            "AdSupport",
+            "CFNetwork",
             "CoreTelephony",
-            "CoreGraphics",
-            "UIKit"
+            "SystemConfiguration",
         });
-        PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK_CPP",_TIMSDKPath+"/ios/ImSDK_CPP.framework.zip", ""));
+        // 动态库
+        PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"));
+        RuntimeDependencies.Add(Path. Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/Info.plist"), UnrealBuildTool.StagedFileType.SystemNonUFS);
+        RuntimeDependencies.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"),UnrealBuildTool.StagedFileType.SystemNonUFS);
+        // IM 静态库不支持，因为会和UE4 冲突
+        // PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK_CPP",_TIMSDKPath+"/ios/ImSDK_CPP.framework.zip", ""));
+        // PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK_CPP",_TIMSDKPath+"/ios/ImSDK_CrossPlatformV2.framework.zip", ""));
     }
     else if(Target.Platform == UnrealTargetPlatform.Mac) {
         PublicAdditionalLibraries.AddRange(new string[] {
-            "resolv",
-            "z",
-            "c++",
-            "bz2",
-            "sqlite3",
+                "resolv",
+                "z",
+                "c++",
+                "bz2",
+                "sqlite3",
         });
     PublicFrameworks.AddRange(
             new string[] {
@@ -76,9 +79,14 @@ private void loadTIMSDK(ReadOnlyTargetRules Target) {
     }
 }
 ```
-4. 在**[project_name].Build.cs**文件调用该函数
+4. 修改游戏自身的 **Config/DefaultGame.ini** ，增加下面这段配置。其中下文的From字段是一个相对路径，第一级为游戏代码所在的根目录。
+```
+[Staging]
++RemapDirectories=(From="IM_Demo/Source/IM_Demo/TIMSDK/ios", To="Frameworks")
+```
+5. 在**[project_name].Build.cs**文件调用该函数
 ![](https://imgcache.qq.com/operation/dianshi/other/im.daf6916efad5d76a751bf224dddec8e1c9cabaff.png)
-5. 到目前为止你已经集成了IM SDK。可在你的cpp 文件中使用IM的能力了。`#include "V2TIMManager.h"`
+6. 到目前为止你已经集成了IM SDK。可在你的cpp 文件中使用IM的能力了。`#include "V2TIMManager.h"`
 ```
 // 获取sdk单例对象
 V2TIMManager* timInstance = V2TIMManager::GetInstance();
@@ -104,7 +112,6 @@ bool isInit = timInstance->InitSDK(SDKAppID, timConfig);
 
 #### Android\s端
 1.开发调试：详见[Android快速入门](https://docs.unrealengine.com/4.27/zh-CN/SharingAndReleasing/Mobile/Android/GettingStarted/)
-
 2.打包项目：详见[打包Android项目](https://docs.unrealengine.com/4.27/zh-CN/SharingAndReleasing/Mobile/Android/PackagingAndroidProject/)
 
 ## IM全平台 C++ API文档

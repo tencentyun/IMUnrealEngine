@@ -64,36 +64,39 @@ public class IM_Demo : ModuleRules
 		else if (Target.Platform == UnrealTargetPlatform.IOS) {
 			PublicAdditionalLibraries.AddRange(
 				new string[] {
-					"z","c++",
-					"z.1.1.3",
-					"sqlite3",
-					"xml2"
+					"z",
+					"c++",
+					"sqlite3"
 				}
 			);
       PublicFrameworks.AddRange(new string[]{
-				"Security",
-				"AdSupport",
+				"CFNetwork",
 				"CoreTelephony",
-				"CoreGraphics",
-				"UIKit"
+				"SystemConfiguration",
 			});
-			PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK_CPP",_TIMSDKPath+"/ios/ImSDK_CPP.framework.zip", ""));
+			// 动态库
+			PublicAdditionalLibraries.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"));
+			RuntimeDependencies.Add(Path. Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/Info.plist"), UnrealBuildTool.StagedFileType.SystemNonUFS);
+			RuntimeDependencies.Add(Path.Combine(ModuleDirectory,"TIMSDK/iOS/ImSDK_CPP.framework/ImSDK_CPP"),UnrealBuildTool.StagedFileType.SystemNonUFS);
+			// IM 静态库不支持，因为会和UE4 冲突
+			// PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK_CPP",_TIMSDKPath+"/ios/ImSDK_CPP.framework.zip", ""));
+			// PublicAdditionalFrameworks.Add(new UEBuildFramework("ImSDK_CPP",_TIMSDKPath+"/ios/ImSDK_CrossPlatformV2.framework.zip", ""));
 		}
 		else if(Target.Platform == UnrealTargetPlatform.Mac) {
 			PublicAdditionalLibraries.AddRange(new string[] {
-                "resolv",
-                "z",
-                "c++",
-                "bz2",
-				"sqlite3",
-            });
+					"resolv",
+					"z",
+					"c++",
+					"bz2",
+					"sqlite3",
+			});
       PublicFrameworks.AddRange(
-                new string[] {
-                    "AppKit",
+				new string[] {
+					"AppKit",
 					"Security",
 					"CFNetwork",
 					"SystemConfiguration",
-                });
+				});
 			PublicFrameworks.Add(Path.Combine(_TIMSDKPath, "Mac", "Release","ImSDKForMac_CPP.framework"));
 		}
 		else if (Target.Platform == UnrealTargetPlatform.Win64) {

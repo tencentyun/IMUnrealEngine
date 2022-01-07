@@ -36,7 +36,7 @@
  * 
  */
 UCLASS()
-class UTimWidget : public UUserWidget,public V2TIMCallback
+class UTimWidget : public UUserWidget,public V2TIMAdvancedMsgListener,public V2TIMCallback
 {
 	GENERATED_BODY()
 private:
@@ -46,26 +46,26 @@ private:
 	V2TIMManager* timInstance;
 
 	void writeLblLog(const char *log);
-	void addMessageToUI(const char *message);
-
-	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
-		void timLogin();
-	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
-		void joinGroup();
+	void OnRecvNewMessage(const V2TIMMessage &message) override;
 	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
 		void sendMessageToGroup();
 
 public:
-	void OnSuccess() override;
-	void OnError(int error_code, const V2TIMString& error_message) override;
 	void NativeConstruct() override;
 	void NativeDestruct() override;
-	
+
+	void OnSuccess() override;
+    void OnError(int error_code, const V2TIMString &error_message);
+
+	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
+		void timLogin();
+	UFUNCTION(BlueprintCallable, Category ="TimDemoFunction")
+		void createGroupNAddListener();
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
-			UTextBlock* txtLog;
+		UTextBlock* txtLog;
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
-	UEditableTextBox* txtInputMessage;
+		UEditableTextBox* txtInputMessage;
 
 	UPROPERTY(VisibleAnywhere, Meta = (BindWidget))
-			UScrollBox* sbMessageList;
+		UScrollBox* sbMessageList;
 };
