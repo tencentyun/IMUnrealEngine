@@ -73,7 +73,9 @@
 2.打包项目：详见[打包Android项目](https://docs.unrealengine.com/4.27/zh-CN/SharingAndReleasing/Mobile/Android/PackagingAndroidProject/)
 
 ## IM UnrealEngine API文档
-[API概览](https://comm.qq.com/imsdk/ue4/md_introduction_CPP%E6%A6%82%E8%A7%88.html)
+[API概览-中文](https://im.sdk.qcloud.com/doc/zh-cn/md_introduction_CPP%E6%A6%82%E8%A7%88.html)
+
+[API Overview - English](https://im.sdk.qcloud.com/doc/en/md_introduction_CPP_overview.html)
 
 ## 常见问题
 
